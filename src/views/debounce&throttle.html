@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <button id="btn1">dobounce</button>
+  <button id="btn2">throttle</button>
+
+  <script>
+
+    window.onload = function () {
+      let btn1 = document.getElementById('btn1')
+      let btn2 = document.getElementById('btn2')
+      function log () {
+        console.log(11)
+      }
+      btn1.onclick = debounce(log)
+      btn2.onclick = throttle(log)
+    }
+
+    // 防抖， 后一次事件覆盖前一次
+    function debounce (fn, time=1000) {
+      let timer = null
+      return function () {
+        if (timer) {
+          clearTimeout(timer)
+        }
+        timer = setTimeout(() => {
+          fn.call(this)
+        }, time)
+      }
+    }
+
+    // 截流， 一段时间内只执行一次
+    function throttle (fn, time=2000) {
+      let timer = null
+      return function () {
+        if (timer) {
+          return
+        }
+        fn.call(this)
+        timer = setTimeout(() => {
+          timer = null
+        }, time)
+      }
+    }
+  </script>
+</body>
+</html>
