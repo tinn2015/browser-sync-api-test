@@ -1,4 +1,4 @@
 # 文件说明
 
-apis  一些js api或者功能的实现
-algorithm  一些算法
+* flatten.js   二维数组扁平化
+* arrayCompose.js 二位数组排列组合
