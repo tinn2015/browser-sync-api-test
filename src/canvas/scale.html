@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        body {
+            background: #282f35;
+            width: 100vw;
+            height: 100vh
+        }
+    </style>
+</head>
+<body>
+    <button id="btn">scale</button>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        window.onload = () => {
+            const canvas = document.querySelector('#canvas')
+            const btn = document.querySelector('#btn')
+            const ctx = canvas.getContext('2d')
+            let lastPoint = []
+            console.log(ctx)
+            canvas.width = document.body.clientWidth;  
+            canvas.height = document.body.clientHeight; 
+
+            btn.onclick = () => {
+                canvas.width *= 2
+                canvas.height *= 2
+                ctx.scale(2,2)
+            }
+
+            // const img = new Image()
+            // img.src = './assets/aa.jpg'
+            // img.onload = () => {
+            //     ctx.drawImage(img, 0 , 0)
+            // }
+
+            
+            canvas.addEventListener('mousedown', (e) => {
+                /**
+                 * canvas 橡皮擦原理：
+                 *  利用图形合成参数globalCompositeOperation = 'destination-out'实现
+                 * 
+                 *  该属性表示： 删除原有内容和新内容重叠的部分， 且新内容不显示
+                */
+                // ctx.globalCompositeOperation = 'destination-out'
+                console.log('mousedown', e)
+                ctx.lineWidth = 5
+                ctx.strokeStyle = "white"
+                ctx.lineCap = "round"
+                ctx.beginPath()
+                ctx.moveTo(e.x, e.y)
+                canvas.addEventListener('mousemove', _mousemove)
+            })
+
+            canvas.addEventListener('mouseup', () => {
+                lastPoint = []
+                canvas.removeEventListener('mousemove', _mousemove)
+            })
+
+            function _mousemove(e){
+                if (lastPoint.length) {
+                    ctx.moveTo(lastPoint[0], lastPoint[1])
+                }
+                ctx.lineTo(e.x, e.y)
+                lastPoint = [e.x, e.y]
+                ctx.stroke()
+            }
+        }
+    </script>
+</body>
+</html>

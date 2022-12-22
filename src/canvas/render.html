@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./modules/fabric.js"></script>
+</head>
+<body>
+    <div>
+        <canvas id="c1" height="700"></canvas>
+        <div id="results-c1"></div>
+    </div>
+    <div>
+        <canvas id="c2"  height="700"></canvas>
+        <div id="results-c2"></div>
+    </div>
+    <script>
+        const width = window.document.body.clientWidth
+        window.onload = function () {
+            fabric.Object.prototype.transparentCorners = false;
+            this.__canvases = [];
+
+            var i, dot,
+                t1, t2,
+                startTimer = function() {
+                t1 = new Date().getTime();
+                return t1;
+                },
+                stopTimer = function() {
+                t2 = new Date().getTime();
+                return t2 - t1;
+                },
+                getRandomInt = fabric.util.getRandomInt,
+                rainbow    = ["#ffcc66", "#ccff66", "#66ccff", "#ff6fcf", "#ff6666"],
+                rainbowEnd = rainbow.length - 1;
+
+            //
+            // Rendering canvas #1
+            //
+            var canvas1  = new fabric.Canvas('c1', { backgroundColor: "#000", width: width }),
+                results1 = document.getElementById('results-c1');
+
+            startTimer();
+            for (i = 1000; i >= 0; i--) {
+                dot = new fabric.Circle({
+                left:   getRandomInt(0, width),
+                top:    getRandomInt(0, 700),
+                radius: 3,
+                fill:   rainbow[getRandomInt(0, rainbowEnd)],
+                objectCaching: false
+                });
+                canvas1.add(dot);
+            }
+            results1.innerHTML = 'Regular ( objectCaching = false ) rendering of 100 elements in ' + stopTimer() + 'ms';
+            this.__canvases.push(canvas1);
+
+            //
+            // Rendering canvas #2
+            //
+            var canvas2  = new fabric.Canvas('c2', { backgroundColor: "#000", renderOnAddRemove: false, width }),
+                results2 = document.getElementById('results-c2');
+
+            startTimer();
+            for (i = 10000; i >= 0; i--) {
+                dot = new fabric.Circle({
+                left:   getRandomInt(0, width),
+                top:    getRandomInt(0, 700),
+                radius: 3,
+                fill:   rainbow[getRandomInt(0, rainbowEnd)],
+                objectCaching: false
+                });
+                canvas2.add(dot);
+            }
+            canvas2.renderAll(); // Note, calling renderAll() is important in this case
+            results2.innerHTML = 'Rendering 1000 elements using canvas.renderOnAddRemove = false and objectCaching = false in ' + stopTimer() + 'ms';
+            this.__canvases.push(canvas2);
+            };
+    </script>
+</body>
+</html>

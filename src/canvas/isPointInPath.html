@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test1</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        #canvas {
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id='canvas' width='500' height='800'></canvas>
+    <script>
+        window.onload = function () {
+            var canvas = document.querySelector('#canvas');
+            var ctx = canvas.getContext('2d');
+            ctx.globalAlpha = .5;//更改透明度
+            var source = [];
+
+            drawMap(ctx);
+            canvas.addEventListener('mousemove',function () {
+                onTap(ctx);
+            },false);
+
+            function drawMap(ctx) {
+
+                 //画出许多圆
+                for (var i = 0; i < 50; i++) {
+                    var R = Math.floor(Math.random() * 256);
+                    var G = Math.floor(Math.random() * 256);
+                    var B = Math.floor(Math.random() * 256);
+                    var x = Math.floor(Math.random() * 501);
+                    var y = Math.floor(Math.random() * 801);
+                    var r = Math.floor(Math.random() * 61 + 10);
+                    var obj = {x: x,y: y,r: r};
+                    source.push(obj);
+
+                    //绘制圆
+                    ctx.beginPath();
+                    ctx.arc(x,y,r,0,Math.PI * 2);
+                    ctx.fillStyle = 'rgb(' + R  + ',' + G + ',' + B +')';
+                    ctx.fill();
+                    ctx.closePath();
+                }
+
+            }
+
+            function onTap(ctx) {
+                var len = source.length;
+
+                //object.getBoundingClientRect()方法不接受参数，它返回object到可视窗口四个边框的距离，这里我们用它的left和top值
+                var x = event.clientX - canvas.getBoundingClientRect().left;
+                var y = event.clientY - canvas.getBoundingClientRect().top;
+                for (var k = 0; k < len; k++) {
+                    ctx.beginPath();
+                    ctx.arc(source[k].x,source[k].y,source[k].r,0,Math.PI * 2);
+
+                    //isPointInPath() 接收一个坐标，如果这个坐标在canvas图形的一个路径里，则返回true，否则返回false，注意结合beginPath()和closePath()使用
+                    if (ctx.isPointInPath(x,y)) {
+                        ctx.fillStyle = 'rgba(255,255,255,.1)';
+                        ctx.fill();
+                    }
+                    ctx.closePath();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
